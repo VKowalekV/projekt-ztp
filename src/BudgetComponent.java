@@ -1,5 +1,5 @@
 public interface BudgetComponent {
-    double getAmout();
+    double getAmount();
     String getName();
     String getType();
 
