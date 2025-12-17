@@ -1,16 +1,42 @@
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.util.List;
 
-public class ConsoleUI {
+public class ConsoleUI implements BudgetObserver {
+//    -reader : BufferedReader
+//-manager : BudgetManager
+//-myGoals : List<SavingsGoal>
+//+ConsoleUI()
+//+start() : void
+//-printMenu() : void
+//-handleAddIncome() : void
+//-handleAddExpense() : void
+//-handleAddGoal() : void
+//-handleShowReport() : void
+//-printCategoryRecursive(cat: Category, level: int) : void
+//-handleExport() : void
+//+update(totalExpenses: double, totalIncome: double) : void
+    private BufferedReader reader;
     private BudgetManager manager;
+    private List<SavingsGoals> myGoals;
 
     public ConsoleUI(){
         this.manager = new BudgetManager();
     }
-
-    public void start(){
-        handleExport();
+    public void start() {
     }
 
+    private void printMenu() {
+    }
+    private void handleAddIncome() {
+    }
+    private void handleAddExpense() {
+    }
+    private void handleAddGoal() {
+    }
+    private void handleShowReport() {
+    }
+    private void printCategoryRecursive(Category cat, int level) {
+    }
     private void handleExport(){
         Scanner scanner = new Scanner(System.in);
         String extension;
@@ -37,5 +63,8 @@ public class ConsoleUI {
         }
 
         manager.exportData(creator);
+    }
+
+    public void update(double totalExpenses, double totalIncome) {
     }
 }
