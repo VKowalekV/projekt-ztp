@@ -1,8 +1,8 @@
 public class BudgetManager {
-
     private static BudgetManager instance;
-//    private Category rootCategory;
-//    private List<BudgetObserver> observers;
+    private Category rootCategory;
+    private List<BudgetObserver> observers;
+    private ExporterCreator exporterFactory;
     private double totalIncome;
 
     private BudgetManager() {
@@ -53,7 +53,8 @@ public class BudgetManager {
     public void notifyObservers() {
     }
 
-    public void exportData(String format) {
+    public void exportData(ExporterCreator creator){
+        creator.performExport(rootCategory);
     }
 
 }
