@@ -5,14 +5,13 @@ public class Category implements BudgetComponent{
     private String name;
     private List<BudgetComponent> children;
     private double spendingLimit;
-//    private BudgetState state;
+    private BudgetState state;
 
     public Category(String name, double spendingLimit) {
         this.name = name;
         this.spendingLimit = spendingLimit;
         this.children = new ArrayList<>();
-
-        // dodać state jak będzie gotowy
+        this.state = new NormalState();
     }
 
     @Override
@@ -38,13 +37,21 @@ public class Category implements BudgetComponent{
     }
 
     @Override
-    public double getAmount() { // zrobić
+    public double getAmount() {
         double total = 0;
+        for  (BudgetComponent c : children) {
+            total += c.getAmount();
+        }
         return total;
     }
 
     @Override
     public BudgetComponent getChild(String name) {
+        for (BudgetComponent c : children) {
+            if (c.getName().equals(name)) {
+                return c;
+            }
+        }
         return null;
     }
 
@@ -56,8 +63,15 @@ public class Category implements BudgetComponent{
         return spendingLimit;
     }
 
-// zrobić get i set dla state
+    public void setState(BudgetState state) {
+        this.state = state;
+    }
 
-    public void checkLimitState() { // zrobić
+    public BudgetState getState() {
+        return state;
+    }
+
+    public void checkLimitState() {
+        if (state != null) state.handleState(this);
     }
 }
