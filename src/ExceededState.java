@@ -6,12 +6,11 @@ public class ExceededState implements BudgetState {
 
     @Override
     public String getStatusName() {
-
+        return "";
     }
 
     @Override
     public String getColorCode() {
-
+        return "";
     }
-
 }
