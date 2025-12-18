@@ -5,9 +5,9 @@ public class Transaction implements BudgetComponent {
     private double amount;
     private LocalDate date;
 
-    public Transaction(String name, double amount, LocalDate date) {
-        this.name = name;
+    public Transaction(double amount, String name, LocalDate date) {
         this.amount = amount;
+        this.name = name;
         this.date = date;
     }
 
