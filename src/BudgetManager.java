@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class BudgetManager {
     private static BudgetManager instance;
     private Category rootCategory;

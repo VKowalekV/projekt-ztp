@@ -6,12 +6,11 @@ public class NormalState implements BudgetState {
 
     @Override
     public String getStatusName() {
-
+        return "";
     }
 
     @Override
     public String getColorCode() {
-
+        return "";
     }
-
 }
