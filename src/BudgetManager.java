@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.List;
 
 public class BudgetManager {
@@ -14,8 +15,9 @@ public class BudgetManager {
         return instance;
     }
 
-//    public Category getRootCategory() {
-//    }
+   public Category getRootCategory() {
+       return rootCategory;
+   }
 
     public void addIncome(double amount) {
     }
@@ -24,14 +26,38 @@ public class BudgetManager {
         return totalIncome;
     }
 
-    public void addTransaction(String categoryName, double amount, String desc) {}
 
-//    private Category findCategoryRecursive(Category current, String name) {
-//
-//    }
+    private Category findCategoryRecursive(Category current, String name) {
+        if (current.getName().equalsIgnoreCase(name)) {
+            return current;
+        }
+        for (BudgetComponent child : current.getChildren()) {
+            if (child instanceof Category) {
+                Category result = findCategoryRecursive((Category) child, name);
+                if (result != null) return result;
+            }
+        }
+        return null;
+    }
+
+    public void addTransaction(String categoryName, double amount, String desc) {
+        Category category = findCategoryRecursive(rootCategory, categoryName);
+        if (category != null) {
+            category.add(new Transaction(amount, desc, LocalDate.now()));
+            notifyObservers();
+        } else {
+            System.out.println("Nie znaleziono kategorii o nazwie " + categoryName);
+        }
+    }
 
     public void addSubCategory(String parentName, String newCatName, double limit) {
-
+        Category parent = findCategoryRecursive(rootCategory, parentName);
+        if (parent != null) {
+            parent.add(new Category(newCatName, limit));
+            notifyObservers();
+        } else {
+            System.out.println("Nie znaleziono kategorii o nazwie " + parentName);
+        }
     }
 
     public double getTotalExpenses() {

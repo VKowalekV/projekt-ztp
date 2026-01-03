@@ -64,7 +64,22 @@ public class ConsoleUI implements BudgetObserver {
 
     private void handleShow() {}
 
-    private void printCategoryRecursive(Category cat, int level) {}
+    public void printCategoryRecursive(Category cat, int level) {
+        String indent = "\t".repeat(level);
+        String color = cat.getState().getColorCode();
+        String reset = "\u001B[0m";
+        String status = cat.getState().getStatusName();
+
+        System.out.println(indent + color + "+ " + cat.getName() + " (" + cat.getAmount() + " / " + cat.getLimit() + ") [" + status + "]" + reset);
+
+        for (BudgetComponent child : cat.getChildren()) {
+            if (child instanceof Category) {
+                printCategoryRecursive((Category) child, level + 1);
+            } else {
+                System.out.println(indent + "\t- " + child.getName() + " (" + child.getAmount() + ")");
+            }
+        }
+    }
 
     private void handleExport() throws IOException {
         String extension;
