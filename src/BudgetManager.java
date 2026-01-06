@@ -1,18 +1,27 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BudgetManager {
-    private static BudgetManager instance;
+    private static Map<String, BudgetManager> instances = new HashMap<>();
     private Category rootCategory;
     private List<BudgetObserver> observers;
-    private ExporterCreator exporterFactory;
     private double totalIncome;
+    private ExporterCreator exporterFactory;
 
     private BudgetManager() {
+        this.observers = new ArrayList<>();
+        this.totalIncome = 0.0;
+        this.rootCategory = new Category("Root", 0.0);
     }
 
-    public static BudgetManager getInstance() {
-        return instance;
+    public static BudgetManager getInstance(String key) {
+        if (!instances.containsKey(key)) {
+            instances.put(key, new BudgetManager());
+        }
+        return instances.get(key);
     }
 
    public Category getRootCategory() {
