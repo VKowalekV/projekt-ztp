@@ -29,6 +29,8 @@ public class BudgetManager {
    }
 
     public void addIncome(double amount) {
+        this.totalIncome += amount;
+        notifyObservers();
     }
 
     public double getIncome() {
@@ -69,29 +71,35 @@ public class BudgetManager {
         }
     }
 
-    public double getTotalExpenses() {
-        return 0;
+   public double getTotalExpenses() {
+        return rootCategory.getAmount();
     }
 
     public double getCurrentSavings() {
-        return 0;
+        return totalIncome - getTotalExpenses();
     }
 
     public double getForecast() {
-        return 0;
+        return getCurrentSavings();
+
     }
 
-//    public void registerObserver(BudgetObserver o) {
-//    }
+    public void registerObserver(BudgetObserver o) {
+        observers.add(o);
+    }
 
-//    public void removeObserver(BudgetObserver o) {
-//    }
+    public void removeObserver(BudgetObserver o) {
+        observers.remove(o);
+    }
 
     public void notifyObservers() {
+        for (BudgetObserver o : observers) {
+            o.update(getTotalExpenses(), totalIncome);
+        }
     }
 
-    public void exportData(ExporterCreator creator){
-        creator.performExport(rootCategory);
+     public void exportData(ExporterCreator creator){
+       creator.performExport(rootCategory);
     }
 
 }
