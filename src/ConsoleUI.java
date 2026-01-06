@@ -21,8 +21,10 @@ public class ConsoleUI implements BudgetObserver {
         // stachu dodaj my goals register observer
         userBudgets.put("jan", "Dom");
         userPasswords.put("jan", "123");
-        userBudgets.put("anna", "Dom");
+        userBudgets.put("anna", "Firma");
         userPasswords.put("anna", "123");
+        userBudgets.put("marcin", "dom");
+        userPasswords.put("marcin", "123");
     }
     public void start() {
         System.out.println("Witaj w Budżecie Domowym!");
@@ -137,7 +139,7 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("Całkowite Wydatki:   " + expenses);
         System.out.println("Bilans (Oszczędności): " + savings);
         System.out.println("\nSzczegóły kategorii:");
-        prtntCategoryRecursive(manager.getRootCategory(), 0);
+        printCategoryRecursive(manager.getRootCategory(), 0);
     }
 
     private void handleShowForecast() {
