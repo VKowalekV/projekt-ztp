@@ -105,17 +105,60 @@ public class ConsoleUI implements BudgetObserver {
         System.out.print("Wybór: ");
     }
 
-    private void handleAddIncome() {}
+    private void handleAddIncome() {
+        System.out.println("\n--- DODAWANIE PRZYCHODU ---\n");
+        System.out.print("Podaj kwotę przychodu: ");
+        try {
+            String input = reader.readLine();
+            double amount = Double.parseDouble(input);
+
+            manager.addIncome(amount);
+
+            System.out.println("Pomyślnie dodano przychód: " + amount);
+        } catch (NumberFormatException e) {
+            System.out.println("Błąd: To nie jest poprawna liczba.");
+        } catch (IOException e) {
+            System.out.println("Błąd wejścia.");
+        }
+    }
 
     private void handleAddExpense() {}
 
     private void handleAddGoal() {}
 
-    private void handleShowReport() {}
+    private void handleShowReport() {
+        System.out.println("\n--- RAPORT FINANSOWY ---");
 
-    private void handleShowForecast() {}
+        double income = manager.getIncome();
+        double expenses = manager.getTotalExpenses();
+        double savings = manager.getCurrentSavings();
 
-    private void handleShow() {}
+        System.out.println("Całkowite Przychody: " + income);
+        System.out.println("Całkowite Wydatki:   " + expenses);
+        System.out.println("Bilans (Oszczędności): " + savings);
+        System.out.println("\nSzczegóły kategorii:");
+        prtntCategoryRecursive(manager.getRootCategory(), 0);
+    }
+
+    private void handleShowForecast() {
+
+    }
+
+    private void handleShow() {
+        System.out.println("\n--- PROGNOZA OSZCZĘDNOŚCI ---");
+
+        double forecast = manager.getForecast();
+
+        System.out.println("Twoje obecne oszczędności (Przychody - Wydatki): " + forecast + " zł");
+
+        if (forecast > 0) {
+            System.out.println("Super! Jesteś na plusie.");
+        } else if (forecast < 0) {
+            System.out.println("Uwaga! Jesteś na minusie.");
+        } else {
+            System.out.println("Wychodzisz na zero.");
+        }
+    }
 
     public void printCategoryRecursive(Category cat, int level) {
         String indent = "\t".repeat(level);
