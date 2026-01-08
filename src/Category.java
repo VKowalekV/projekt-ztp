@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Category implements BudgetComponent{
+public class Category implements BudgetComponent {
     private String name;
     private List<BudgetComponent> children;
     private double spendingLimit;
@@ -39,7 +39,7 @@ public class Category implements BudgetComponent{
     @Override
     public double getAmount() {
         double total = 0;
-        for  (BudgetComponent c : children) {
+        for (BudgetComponent c : children) {
             total += c.getAmount();
         }
         return total;
@@ -72,6 +72,7 @@ public class Category implements BudgetComponent{
     }
 
     public void checkLimitState() {
-        if (state != null) state.handleState(this);
+        if (state != null)
+            state.handleState(this);
     }
 }
