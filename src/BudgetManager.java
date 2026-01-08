@@ -1,18 +1,27 @@
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class BudgetManager {
-    private static BudgetManager instance;
+    private static Map<String, BudgetManager> instances = new HashMap<>();
     private Category rootCategory;
     private List<BudgetObserver> observers;
-    private ExporterCreator exporterFactory;
     private double totalIncome;
+    private ExporterCreator exporterFactory;
 
     private BudgetManager() {
+        this.observers = new ArrayList<>();
+        this.totalIncome = 0.0;
+        this.rootCategory = new Category("Root", 0.0);
     }
 
-    public static BudgetManager getInstance() {
-        return instance;
+    public static BudgetManager getInstance(String key) {
+        if (!instances.containsKey(key)) {
+            instances.put(key, new BudgetManager());
+        }
+        return instances.get(key);
     }
 
    public Category getRootCategory() {
@@ -20,6 +29,8 @@ public class BudgetManager {
    }
 
     public void addIncome(double amount) {
+        this.totalIncome += amount;
+        notifyObservers();
     }
 
     public double getIncome() {
@@ -60,29 +71,35 @@ public class BudgetManager {
         }
     }
 
-    public double getTotalExpenses() {
-        return 0;
+   public double getTotalExpenses() {
+        return rootCategory.getAmount();
     }
 
     public double getCurrentSavings() {
-        return 0;
+        return totalIncome - getTotalExpenses();
     }
 
     public double getForecast() {
-        return 0;
+        return getCurrentSavings();
+
     }
 
-//    public void registerObserver(BudgetObserver o) {
-//    }
+    public void registerObserver(BudgetObserver o) {
+        observers.add(o);
+    }
 
-//    public void removeObserver(BudgetObserver o) {
-//    }
+    public void removeObserver(BudgetObserver o) {
+        observers.remove(o);
+    }
 
     public void notifyObservers() {
+        for (BudgetObserver o : observers) {
+            o.update(getTotalExpenses(), totalIncome);
+        }
     }
 
-    public void exportData(ExporterCreator creator){
-        creator.performExport(rootCategory);
+     public void exportData(ExporterCreator creator){
+       creator.performExport(rootCategory);
     }
 
 }
