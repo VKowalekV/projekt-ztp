@@ -85,7 +85,6 @@ public class ConsoleUI implements BudgetObserver {
                         case 0 -> {
                             System.out.println("Zamykanie...");
                             isUserLoggedIn = false;
-                            return;
                         }
                         default -> System.out.println("Nieznana opcja.");
                     }
