@@ -9,12 +9,11 @@ public class BudgetManager {
     private Map<String, BudgetMonth> months;
     private BudgetMonth currentMonth;
     private List<BudgetObserver> observers;
-    private double totalIncome;
 
     private BudgetManager() {
         this.observers = new ArrayList<>();
         this.months = new HashMap<>();
-        this.totalIncome = 0.0;
+
         changeMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     }
 
