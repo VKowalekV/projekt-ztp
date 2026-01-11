@@ -6,15 +6,16 @@ import java.util.Map;
 
 public class BudgetManager {
     private static Map<String, BudgetManager> instances = new HashMap<>();
-    private Category rootCategory;
+    private Map<String, BudgetMonth> months;
+    private BudgetMonth currentMonth;
     private List<BudgetObserver> observers;
     private double totalIncome;
-    private ExporterCreator exporterFactory;
 
     private BudgetManager() {
         this.observers = new ArrayList<>();
+        this.months = new HashMap<>();
         this.totalIncome = 0.0;
-        this.rootCategory = new Category("Root", 0.0);
+        changeMonth(LocalDate.now().getYear(), LocalDate.now().getMonthValue());
     }
 
     public static BudgetManager getInstance(String key) {
@@ -24,64 +25,64 @@ public class BudgetManager {
         return instances.get(key);
     }
 
-    public Category getRootCategory() {
-        return rootCategory;
-    }
-
-    public void addIncome(double amount) {
-        this.totalIncome += amount;
+    public void changeMonth(int year, int month) {
+        String key = year + "-" + month;
+        if (!months.containsKey(key)) {
+            months.put(key, new BudgetMonth(year, month));
+        }
+        this.currentMonth = months.get(key);
         notifyObservers();
     }
 
-    public double getIncome() {
-        return totalIncome;
+    public BudgetMonth getCurrentMonth() {
+        return currentMonth;
     }
 
-    private Category findCategoryRecursive(Category current, String name) {
-        if (current.getName().equalsIgnoreCase(name)) {
-            return current;
+    public void nextState() {
+        if (currentMonth != null) {
+            currentMonth.nextState();
         }
-        for (BudgetComponent child : current.getChildren()) {
-            if (child instanceof Category) {
-                Category result = findCategoryRecursive((Category) child, name);
-                if (result != null)
-                    return result;
-            }
+    }
+
+    public Category getRootCategory() {
+        return currentMonth != null ? currentMonth.getRootCategory() : null;
+    }
+
+    public void addIncome(double amount) {
+        if (currentMonth != null) {
+            currentMonth.addIncome(amount);
+            notifyObservers();
         }
-        return null;
+    }
+
+    public double getIncome() {
+        return currentMonth != null ? currentMonth.getIncome() : 0.0;
     }
 
     public void addTransaction(String categoryName, double amount, String desc) {
-        Category category = findCategoryRecursive(rootCategory, categoryName);
-        if (category != null) {
-            category.add(new Transaction(amount, desc, LocalDate.now()));
+        if (currentMonth != null) {
+            currentMonth.addTransaction(categoryName, amount, desc);
             notifyObservers();
-        } else {
-            System.out.println("Nie znaleziono kategorii o nazwie " + categoryName);
         }
     }
 
     public void addSubCategory(String parentName, String newCatName, double limit) {
-        Category parent = findCategoryRecursive(rootCategory, parentName);
-        if (parent != null) {
-            parent.add(new Category(newCatName, limit));
+        if (currentMonth != null) {
+            currentMonth.addSubCategory(parentName, newCatName, limit);
             notifyObservers();
-        } else {
-            System.out.println("Nie znaleziono kategorii o nazwie " + parentName);
         }
     }
 
     public double getTotalExpenses() {
-        return rootCategory.getAmount();
+        return currentMonth != null ? currentMonth.getTotalExpenses() : 0.0;
     }
 
     public double getCurrentSavings() {
-        return totalIncome - getTotalExpenses();
+        return getIncome() - getTotalExpenses();
     }
 
     public double getForecast() {
         return getCurrentSavings();
-
     }
 
     public void registerObserver(BudgetObserver o) {
@@ -94,12 +95,13 @@ public class BudgetManager {
 
     public void notifyObservers() {
         for (BudgetObserver o : observers) {
-            o.update(getTotalExpenses(), totalIncome);
+            o.update(getTotalExpenses(), getIncome());
         }
     }
 
     public void exportData(ExporterCreator creator) {
-        creator.performExport(rootCategory);
+        if (currentMonth != null) {
+            creator.performExport(currentMonth.getRootCategory());
+        }
     }
-
 }
