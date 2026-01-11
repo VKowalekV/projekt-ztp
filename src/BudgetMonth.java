@@ -56,15 +56,34 @@ public class BudgetMonth {
     }
 
     public void performAddTransaction(String categoryName, double amount, String desc) {
-
+        Category category = findCategoryRecursive(rootCategory, categoryName);
+        if (category != null) {
+            category.add(new Transaction(amount, desc, LocalDate.of(year, month, 1)));
+        } else {
+            System.out.println("Nie znaleziono kategorii o nazwie " + categoryName);
+        }
     }
 
     public void performAddSubCategory(String parentName, String newCatName, double limit) {
-
+        Category parent = findCategoryRecursive(rootCategory, parentName);
+        if (parent != null) {
+            parent.add(new Category(newCatName, limit));
+        } else {
+            System.out.println("Nie znaleziono kategorii o nazwie " + parentName);
+        }
     }
 
     private Category findCategoryRecursive(Category current, String name) {
-
+        if (current.getName().equalsIgnoreCase(name)) {
+            return current;
+        }
+        for (BudgetComponent child : current.getChildren()) {
+            if (child instanceof Category) {
+                Category result = findCategoryRecursive((Category) child, name);
+                if (result != null)
+                    return result;
+            }
+        }
         return null;
     }
 
