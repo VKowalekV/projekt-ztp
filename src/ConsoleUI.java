@@ -1,25 +1,21 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.List;
-import java.util.Map;
 import java.util.HashMap;
-import java.util.ArrayList;
+import java.util.Map;
 
 public class ConsoleUI implements BudgetObserver {
     private BufferedReader reader;
     private BudgetManager manager;
-    private List<SavingsGoals> myGoals;
 
     private Map<String, String> userBudgets = new HashMap<>();
     private Map<String, String> userPasswords = new HashMap<>();
 
     public ConsoleUI() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
-        this.myGoals = new ArrayList<>();
         // this.manager = BudgetManager.getInstance();//Na razie to zakomentowałem bo
         // nie wiem kto sie loguje
-        // stachu dodaj my goals register observer
+
         userBudgets.put("jan", "Dom");
         userPasswords.put("jan", "123");
         userBudgets.put("anna", "Firma");
@@ -63,10 +59,12 @@ public class ConsoleUI implements BudgetObserver {
                 return;
             }
 
-            // Inicjalizacja Managera dopiero tutaj, gdy mamy ID!
             this.manager = BudgetManager.getInstance(loggedBudgetId);
-            this.manager.registerObserver(this); // Rejestracja obserwatora
+            this.manager.registerObserver(this);
             boolean isUserLoggedIn = true;
+
+            java.time.LocalDate now = java.time.LocalDate.now();
+            manager.changeMonth(now.getYear(), now.getMonthValue());
 
             while (isUserLoggedIn) {
                 printMenu();
@@ -79,15 +77,15 @@ public class ConsoleUI implements BudgetObserver {
                     switch (choice) {
                         case 1 -> handleAddIncome();
                         case 2 -> handleAddExpense();
-                        case 3 -> handleAddGoal();
-                        case 4 -> handleShowReport();
-                        case 5 -> handleShow();
-                        case 6 -> handleExport();
-                        case 7 -> {
-                            System.out.println("Wylogowywanie...");
-                            // this.manager.removeObserver(this);
-                            this.manager = null;
+                        case 3 -> handleAddCategory();
+                        case 4 -> handleNextState();
+                        case 5 -> handleChangeMonth();
+                        case 6 -> handleShowReport();
+                        case 7 -> handleExport();
+                        case 0 -> {
+                            System.out.println("Zamykanie...");
                             isUserLoggedIn = false;
+                            return;
                         }
                         default -> System.out.println("Nieznana opcja.");
                     }
@@ -99,15 +97,73 @@ public class ConsoleUI implements BudgetObserver {
     }
 
     private void printMenu() {
-        System.out.println("\n--- MENU ---");
+        BudgetMonth current = manager.getCurrentMonth();
+        String monthStr = (current != null) ? (current.getYear() + "-" + current.getMonth()) : "Brak";
+
+        String stateName = "N/A";
+        String nextStateAction = "Zmień status budżetu";
+
+        if (current != null) {
+            BudgetLifecycleState state = current.getLifecycleState();
+            stateName = state.getStateName();
+
+            if (state instanceof DraftState) {
+                nextStateAction = "Zatwierdź plan (-> Aktywuj budżet)";
+            } else if (state instanceof ActiveState) {
+                nextStateAction = "Zamknij miesiąc (-> Zablokuj edycję)";
+            } else if (state instanceof ClosedState) {
+                nextStateAction = "(Miesiąc zamknięty - brak akcji)";
+            }
+        }
+
+        System.out.println("\n--- MENU [" + monthStr + "] Status: " + stateName + " ---");
         System.out.println("1. Dodaj przychód");
-        System.out.println("2. Dodaj wydatek");
-        System.out.println("3. Dodaj cel oszczędnościowy");
-        System.out.println("4. Pokaż raport wydatków");
-        System.out.println("5. Pokaż prognozę");
-        System.out.println("6. Eksportuj dane");
-        System.out.println("7. Wyloguj / Zmień konto");
+        System.out.println("2. Dodaj wydatek (Transakcja)");
+        System.out.println("3. Dodaj kategorię (Struktura)");
+        System.out.println("4. " + nextStateAction);
+        System.out.println("5. Przełącz miesiąc");
+        System.out.println("6. Pokaż raport");
+        System.out.println("7. Eksportuj dane");
+        System.out.println("0. Wyjście");
         System.out.print("Wybór: ");
+    }
+
+    private void handleChangeMonth() {
+        try {
+            System.out.print("Podaj rok (np. 2024): ");
+            int year = Integer.parseInt(reader.readLine());
+            System.out.print("Podaj miesiąc (1-12): ");
+            int month = Integer.parseInt(reader.readLine());
+            manager.changeMonth(year, month);
+            System.out.println("Przełączono na miesiąc: " + year + "-" + month);
+        } catch (Exception e) {
+            System.out.println("Błąd danych.");
+        }
+    }
+
+    private void handleNextState() {
+        manager.nextState();
+    }
+
+    private void handleAddCategory() {
+        try {
+            System.out.println("\n--- OBECNA STRUKTURA KATEGORII ---");
+            if (manager.getRootCategory() != null) {
+                printCategoryRecursive(manager.getRootCategory(), 0);
+            }
+
+            System.out.println("\n--- DODAWANIE KATEGORII ---");
+            System.out.print("Nazwa kategorii nadrzędnej (lub '" + manager.getRootCategory().getName() + "'): ");
+            String parent = reader.readLine();
+            System.out.print("Nazwa nowej kategorii: ");
+            String name = reader.readLine();
+            System.out.print("Limit wydatków: ");
+            double limit = Double.parseDouble(reader.readLine());
+
+            manager.addSubCategory(parent, name, limit);
+        } catch (Exception e) {
+            System.out.println("Błąd wejścia.");
+        }
     }
 
     private void handleAddIncome() {
@@ -116,9 +172,7 @@ public class ConsoleUI implements BudgetObserver {
         try {
             String input = reader.readLine();
             double amount = Double.parseDouble(input);
-
             manager.addIncome(amount);
-
             System.out.println("Pomyślnie dodano przychód: " + amount);
         } catch (NumberFormatException e) {
             System.out.println("Błąd: To nie jest poprawna liczba.");
@@ -128,13 +182,26 @@ public class ConsoleUI implements BudgetObserver {
     }
 
     private void handleAddExpense() {
-    }
+        try {
+            System.out.print("Kategoria: ");
+            String cat = reader.readLine();
+            System.out.print("Kwota: ");
+            double amount = Double.parseDouble(reader.readLine());
+            System.out.print("Opis: ");
+            String desc = reader.readLine();
 
-    private void handleAddGoal() {
+            manager.addTransaction(cat, amount, desc);
+        } catch (Exception e) {
+            System.out.println("Błąd danych.");
+        }
     }
 
     private void handleShowReport() {
         System.out.println("\n--- RAPORT FINANSOWY ---");
+        if (manager.getCurrentMonth() == null) {
+            System.out.println("Brak wybranego miesiąca.");
+            return;
+        }
 
         double income = manager.getIncome();
         double expenses = manager.getTotalExpenses();
@@ -142,29 +209,9 @@ public class ConsoleUI implements BudgetObserver {
 
         System.out.println("Całkowite Przychody: " + income);
         System.out.println("Całkowite Wydatki:   " + expenses);
-        System.out.println("Bilans (Oszczędności): " + savings);
+        System.out.println("Bilans: " + savings);
         System.out.println("\nSzczegóły kategorii:");
         printCategoryRecursive(manager.getRootCategory(), 0);
-    }
-
-    private void handleShowForecast() {
-
-    }
-
-    private void handleShow() {
-        System.out.println("\n--- PROGNOZA OSZCZĘDNOŚCI ---");
-
-        double forecast = manager.getForecast();
-
-        System.out.println("Twoje obecne oszczędności (Przychody - Wydatki): " + forecast + " zł");
-
-        if (forecast > 0) {
-            System.out.println("Super! Jesteś na plusie.");
-        } else if (forecast < 0) {
-            System.out.println("Uwaga! Jesteś na minusie.");
-        } else {
-            System.out.println("Wychodzisz na zero.");
-        }
     }
 
     public void printCategoryRecursive(Category cat, int level) {
