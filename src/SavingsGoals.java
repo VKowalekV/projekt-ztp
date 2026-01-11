@@ -17,21 +17,22 @@ public class SavingsGoals implements BudgetObserver {
     }
 }
 /*
-Klasa SavingsGoal
-
-Obserwuje budżet, by sprawdzić, czy użytkownika stać na cel.
-
-Pola:
-
-goalName : String – Nazwa celu (np. "Nowy Laptop").
-
-targetAmount : double – Wymagana kwota.
-
-isMet : boolean – Flaga, czy cel został osiągnięty.
-
-Metody:
-
-+ update(...) – Oblicza oszczędności (Income - Expenses). Jeśli są >= targetAmount, zmienia isMet na true.
-
-+ getStatus() – Zwraca sformatowany tekst o postępie realizacji celu
-*/
+ * Klasa SavingsGoal
+ * 
+ * Obserwuje budżet, by sprawdzić, czy użytkownika stać na cel.
+ * 
+ * Pola:
+ * 
+ * goalName : String – Nazwa celu (np. "Nowy Laptop").
+ * 
+ * targetAmount : double – Wymagana kwota.
+ * 
+ * isMet : boolean – Flaga, czy cel został osiągnięty.
+ * 
+ * Metody:
+ * 
+ * + update(...) – Oblicza oszczędności (Income - Expenses). Jeśli są >=
+ * targetAmount, zmienia isMet na true.
+ * 
+ * + getStatus() – Zwraca sformatowany tekst o postępie realizacji celu
+ */

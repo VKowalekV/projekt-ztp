@@ -24,9 +24,9 @@ public class BudgetManager {
         return instances.get(key);
     }
 
-   public Category getRootCategory() {
-       return rootCategory;
-   }
+    public Category getRootCategory() {
+        return rootCategory;
+    }
 
     public void addIncome(double amount) {
         this.totalIncome += amount;
@@ -37,7 +37,6 @@ public class BudgetManager {
         return totalIncome;
     }
 
-
     private Category findCategoryRecursive(Category current, String name) {
         if (current.getName().equalsIgnoreCase(name)) {
             return current;
@@ -45,7 +44,8 @@ public class BudgetManager {
         for (BudgetComponent child : current.getChildren()) {
             if (child instanceof Category) {
                 Category result = findCategoryRecursive((Category) child, name);
-                if (result != null) return result;
+                if (result != null)
+                    return result;
             }
         }
         return null;
@@ -71,7 +71,7 @@ public class BudgetManager {
         }
     }
 
-   public double getTotalExpenses() {
+    public double getTotalExpenses() {
         return rootCategory.getAmount();
     }
 
@@ -98,8 +98,8 @@ public class BudgetManager {
         }
     }
 
-     public void exportData(ExporterCreator creator){
-       creator.performExport(rootCategory);
+    public void exportData(ExporterCreator creator) {
+        creator.performExport(rootCategory);
     }
 
 }

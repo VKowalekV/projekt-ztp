@@ -36,7 +36,7 @@ public class Transaction implements BudgetComponent {
     }
 
     @Override
-    public void remove (BudgetComponent c) {
+    public void remove(BudgetComponent c) {
         throw new UnsupportedOperationException("Nie można usunąć elementu z transakcji.");
     }
 

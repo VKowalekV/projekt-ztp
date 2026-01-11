@@ -14,10 +14,11 @@ public class ConsoleUI implements BudgetObserver {
     private Map<String, String> userBudgets = new HashMap<>();
     private Map<String, String> userPasswords = new HashMap<>();
 
-    public ConsoleUI(){
+    public ConsoleUI() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
         this.myGoals = new ArrayList<>();
-        //this.manager = BudgetManager.getInstance();//Na razie to zakomentowałem bo nie wiem kto sie loguje
+        // this.manager = BudgetManager.getInstance();//Na razie to zakomentowałem bo
+        // nie wiem kto sie loguje
         // stachu dodaj my goals register observer
         userBudgets.put("jan", "Dom");
         userPasswords.put("jan", "123");
@@ -26,6 +27,7 @@ public class ConsoleUI implements BudgetObserver {
         userBudgets.put("marcin", "dom");
         userPasswords.put("marcin", "123");
     }
+
     public void start() {
         System.out.println("Witaj w Budżecie Domowym!");
         while (true) {
@@ -61,16 +63,17 @@ public class ConsoleUI implements BudgetObserver {
                 return;
             }
 
-                // Inicjalizacja Managera dopiero tutaj, gdy mamy ID!
-                this.manager = BudgetManager.getInstance(loggedBudgetId);
-                this.manager.registerObserver(this); // Rejestracja obserwatora
+            // Inicjalizacja Managera dopiero tutaj, gdy mamy ID!
+            this.manager = BudgetManager.getInstance(loggedBudgetId);
+            this.manager.registerObserver(this); // Rejestracja obserwatora
             boolean isUserLoggedIn = true;
 
             while (isUserLoggedIn) {
                 printMenu();
                 try {
                     String line = reader.readLine();
-                    if (line == null || line.trim().isEmpty()) continue;
+                    if (line == null || line.trim().isEmpty())
+                        continue;
                     int choice = Integer.parseInt(line);
 
                     switch (choice) {
@@ -82,7 +85,7 @@ public class ConsoleUI implements BudgetObserver {
                         case 6 -> handleExport();
                         case 7 -> {
                             System.out.println("Wylogowywanie...");
-                            //this.manager.removeObserver(this);
+                            // this.manager.removeObserver(this);
                             this.manager = null;
                             isUserLoggedIn = false;
                         }
@@ -124,9 +127,11 @@ public class ConsoleUI implements BudgetObserver {
         }
     }
 
-    private void handleAddExpense() {}
+    private void handleAddExpense() {
+    }
 
-    private void handleAddGoal() {}
+    private void handleAddGoal() {
+    }
 
     private void handleShowReport() {
         System.out.println("\n--- RAPORT FINANSOWY ---");
@@ -168,7 +173,8 @@ public class ConsoleUI implements BudgetObserver {
         String reset = "\u001B[0m";
         String status = cat.getState().getStatusName();
 
-        System.out.println(indent + color + "+ " + cat.getName() + " (" + cat.getAmount() + " / " + cat.getLimit() + ") [" + status + "]" + reset);
+        System.out.println(indent + color + "+ " + cat.getName() + " (" + cat.getAmount() + " / " + cat.getLimit()
+                + ") [" + status + "]" + reset);
 
         for (BudgetComponent child : cat.getChildren()) {
             if (child instanceof Category) {
@@ -204,5 +210,6 @@ public class ConsoleUI implements BudgetObserver {
         manager.exportData(creator);
     }
 
-    public void update(double totalExpenses, double totalIncome) {}
+    public void update(double totalExpenses, double totalIncome) {
+    }
 }
