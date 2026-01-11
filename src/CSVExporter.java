@@ -1,8 +1,11 @@
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class CSVExporter implements FileExporter {
 
@@ -10,7 +13,19 @@ public class CSVExporter implements FileExporter {
     public void export(BudgetComponent root) {
         System.out.println("\tZAPIS DO PLIKU CSV");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/out.csv"));
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String directoryPath = "exports/CSVExport/";
+        String fileName = directoryPath + LocalDateTime.now().format(formatter) + ".csv";
+
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                System.out.println("Błąd: Nie można utworzyć katalogu " + directoryPath + "\n");
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
                 CSVPrinter printer = new CSVPrinter(writer,
                         CSVFormat.DEFAULT.withHeader("Name", "Type", "Amount", "Limit", "Path"))) {
 
