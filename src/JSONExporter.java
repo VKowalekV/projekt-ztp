@@ -4,8 +4,12 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class JSONExporter implements FileExporter {
 
@@ -13,7 +17,19 @@ public class JSONExporter implements FileExporter {
     public void export(BudgetComponent root) {
         System.out.println("\tZAPIS DO PLIKU JSON");
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/out.json"))) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
+        String directoryPath = "exports/JSONExport/";
+        String fileName = directoryPath + LocalDateTime.now().format(formatter) + ".json";
+
+        File directory = new File(directoryPath);
+        if (!directory.exists()) {
+            boolean created = directory.mkdirs();
+            if (!created) {
+                System.out.println("Błąd: Nie można utworzyć katalogu " + directoryPath + "\n");
+            }
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             JsonObject rootJson = buildJsonRecursive(root);
             writer.write(gson.toJson(rootJson));
