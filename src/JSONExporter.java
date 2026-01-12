@@ -14,12 +14,16 @@ import java.time.format.DateTimeFormatter;
 public class JSONExporter implements FileExporter {
 
     @Override
-    public void export(BudgetComponent root) {
+    public void export(BudgetComponent root, BudgetMonth currentMonth) {
+        int Month = currentMonth.getMonth();
+        int Year = currentMonth.getYear();
         System.out.println("\tZAPIS DO PLIKU JSON");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String directoryPath = "exports/JSONExport/";
-        String fileName = directoryPath + LocalDateTime.now().format(formatter) + ".json";
+        LocalDateTime now = LocalDateTime.now();
+        String timeId = now.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+
+        String fileName = directoryPath + Month + "_" + Year + "_" + timeId + ".json";
 
         File directory = new File(directoryPath);
         if (!directory.exists()) {

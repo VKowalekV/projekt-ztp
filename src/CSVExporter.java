@@ -10,12 +10,16 @@ import java.time.format.DateTimeFormatter;
 public class CSVExporter implements FileExporter {
 
     @Override
-    public void export(BudgetComponent root) {
+    public void export(BudgetComponent root, BudgetMonth currentMonth) {
+        int Month = currentMonth.getMonth();
+        int Year = currentMonth.getYear();
         System.out.println("\tZAPIS DO PLIKU CSV");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm-ss");
         String directoryPath = "exports/CSVExport/";
-        String fileName = directoryPath + LocalDateTime.now().format(formatter) + ".csv";
+        LocalDateTime now = LocalDateTime.now();
+        String timeId = now.format(DateTimeFormatter.ofPattern("yyMMddHHmmss"));
+
+        String fileName = directoryPath + Month + "_" + Year + "_" + timeId + ".csv";
 
         File directory = new File(directoryPath);
         if (!directory.exists()) {
