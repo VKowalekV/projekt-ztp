@@ -63,6 +63,11 @@ public class Category implements BudgetComponent {
         return spendingLimit;
     }
 
+    public void setSpendingLimit(double spendingLimit) {
+        this.spendingLimit = spendingLimit;
+        checkLimitState();
+    }
+
     public void setState(BudgetState state) {
         this.state = state;
     }
