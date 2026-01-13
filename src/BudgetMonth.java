@@ -3,14 +3,14 @@ import java.time.LocalDate;
 public class BudgetMonth {
     private int year;
     private int month;
-    private RootCategory rootCategory;
+    private Category rootCategory;
     private BudgetLifecycleState lifecycleState;
     private double totalIncome;
 
     public BudgetMonth(int year, int month) {
         this.year = year;
         this.month = month;
-        this.rootCategory = new RootCategory();
+        this.rootCategory = new Category("Budzet", 0.0);
         this.lifecycleState = new DraftState();
         this.totalIncome = 0.0;
     }
@@ -41,6 +41,7 @@ public class BudgetMonth {
 
     public void addIncome(double amount) {
         this.totalIncome += amount;
+        this.rootCategory.setSpendingLimit(totalIncome);
     }
 
     public double getIncome() {
@@ -67,6 +68,20 @@ public class BudgetMonth {
     public void performAddSubCategory(String parentName, String newCatName, double limit) {
         Category parent = findCategoryRecursive(rootCategory, parentName);
         if (parent != null) {
+            double currentChildrenLimitSum = 0;
+            for (BudgetComponent c : parent.getChildren()) {
+                if (c instanceof Category) {
+                    currentChildrenLimitSum += ((Category) c).getLimit();
+                }
+            }
+            if (currentChildrenLimitSum + limit > parent.getLimit()) {
+                System.out.println(
+                        "Blad: Suma limitow kategorii przekracza dostepne srodki (limit kategorii nadrzednej '"
+                                + parent.getName() + "': "
+                                + parent.getLimit() + ")");
+                return;
+            }
+
             parent.add(new Category(newCatName, limit));
         } else {
             System.out.println("Nie znaleziono kategorii o nazwie " + parentName);
