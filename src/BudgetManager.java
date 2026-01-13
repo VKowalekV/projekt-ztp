@@ -3,6 +3,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.time.YearMonth;
 
 public class BudgetManager {
     private static Map<String, BudgetManager> instances = new HashMap<>();
@@ -81,7 +82,25 @@ public class BudgetManager {
     }
 
     public double getForecast() {
-        return getCurrentSavings();
+        if (currentMonth == null) return 0.0;
+
+        LocalDate now = LocalDate.now();
+        boolean isCurrentMonth = (currentMonth.getYear() == now.getYear()
+                && currentMonth.getMonth() == now.getMonthValue());
+
+        if (!isCurrentMonth) {
+            return getCurrentSavings();
+        }
+
+        double currentExpenses = getTotalExpenses();
+
+        int daysInMonth = YearMonth.of(currentMonth.getYear(), currentMonth.getMonth()).lengthOfMonth();
+        int daysPassed = now.getDayOfMonth();
+        if (daysPassed == 0) daysPassed = 1;
+
+        double projectedExpenses = (currentExpenses / daysPassed) * daysInMonth;
+
+        return getIncome() - projectedExpenses;
     }
 
     public void registerObserver(BudgetObserver o) {
