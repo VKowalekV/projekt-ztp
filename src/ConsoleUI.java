@@ -289,6 +289,35 @@ public class ConsoleUI implements BudgetObserver {
     }
 
     public void update(double totalExpenses, double totalIncome) {
+        double totalAllocated = 0.0;
+        for (SavingsGoals sg : savingsGoals) {
+            totalAllocated += sg.getAllocated();
+        }
+        double available = manager.getIncome() - manager.getTotalExpenses() - totalAllocated;
+        if (available > 1e-9) {
+            List<SavingsGoals> needy = new ArrayList<>();
+            for (SavingsGoals sg : savingsGoals) if (sg.getRemainingNeed() > 0.0) needy.add(sg);
+            while (available > 1e-6 && !needy.isEmpty()) {
+                int n = needy.size();
+                double per = available / n;
+                boolean any = false;
+                java.util.Iterator<SavingsGoals> it = needy.iterator();
+                while (it.hasNext()) {
+                    SavingsGoals sg = it.next();
+                    double need = sg.getRemainingNeed();
+                    double toAlloc = Math.min(per, need);
+                    if (toAlloc > 0.0) {
+                        double actually = sg.allocate(toAlloc);
+                        available -= actually;
+                        any = true;
+                        System.out.println(String.format("Przydzielono %.2f do celu '%s' (%.2f/%.2f)", actually, sg.getGoalName(), sg.getAllocated(), sg.getAllocated() + sg.getRemainingNeed()));
+                    }
+                    if (sg.getRemainingNeed() <= 1e-6) it.remove();
+                }
+                if (!any) break;
+            }
+        }
+
         if (manager == null || manager.getRootCategory() == null) return;
         checkExceededRecursive(manager.getRootCategory());
     }
