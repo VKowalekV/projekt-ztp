@@ -3,16 +3,18 @@ public class WarningState implements BudgetState {
     public void handleState(Category context) {
         double limit = context.getLimit();
         double ratio = context.getAmount() / limit;
-        if (ratio >= 1.0) {
+        if (ratio > 1.0) {
             context.setState(new ExceededState());
         } else if (ratio < 0.8) {
             context.setState(new NormalState());
+        } else if (ratio == 1.0) {
+            context.setState(new LimitReachedState());
         }
     }
 
     @Override
     public String getStatusName() {
-        return "OSTRZEŻENIE (wydano 80% z założonego budrzetu)!";
+        return "Wydano ponad 80% z założonego limitu";
     }
 
     @Override

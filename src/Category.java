@@ -7,6 +7,8 @@ public class Category implements BudgetComponent {
     private double spendingLimit;
     private BudgetState state;
 
+    private BudgetComponent parent;
+
     public Category(String name, double spendingLimit) {
         this.name = name;
         this.spendingLimit = spendingLimit;
@@ -17,12 +19,14 @@ public class Category implements BudgetComponent {
     @Override
     public void add(BudgetComponent c) {
         this.children.add(c);
+        c.setParent(this);
         checkLimitState();
     }
 
     @Override
     public void remove(BudgetComponent c) {
         this.children.remove(c);
+        c.setParent(null);
         checkLimitState();
     }
 
@@ -63,6 +67,11 @@ public class Category implements BudgetComponent {
         return spendingLimit;
     }
 
+    public void setSpendingLimit(double spendingLimit) {
+        this.spendingLimit = spendingLimit;
+        checkLimitState();
+    }
+
     public void setState(BudgetState state) {
         this.state = state;
     }
@@ -71,8 +80,22 @@ public class Category implements BudgetComponent {
         return state;
     }
 
+    @Override
+    public void setParent(BudgetComponent parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public BudgetComponent getParent() {
+        return parent;
+    }
+
     public void checkLimitState() {
         if (state != null)
             state.handleState(this);
+
+        if (parent != null && parent instanceof Category) {
+            ((Category) parent).checkLimitState();
+        }
     }
 }

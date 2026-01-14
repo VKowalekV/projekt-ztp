@@ -17,8 +17,6 @@ public class ConsoleUI implements BudgetObserver {
 
     public ConsoleUI() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
-        // this.manager = BudgetManager.getInstance();//Na razie to zakomentowałem bo
-        // nie wiem kto sie loguje
 
         userBudgets.put("jan", "Dom");
         userPasswords.put("jan", "123");
@@ -87,6 +85,7 @@ public class ConsoleUI implements BudgetObserver {
                         case 6 -> handleChangeMonth();
                         case 7 -> handleShowReport();
                         case 8 -> handleExport();
+                        case 9 -> handleShowForecast();
                         case 0 -> {
                             System.out.println("Zamykanie...");
                             isUserLoggedIn = false;
@@ -129,6 +128,7 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("6. Przełącz miesiąc");
         System.out.println("7. Pokaż raport");
         System.out.println("8. Eksportuj dane");
+        System.out.println("9. Pokaż prognozę");
         System.out.println("0. Wyjście");
         System.out.print("Wybór: ");
     }
@@ -243,6 +243,32 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("Bilans: " + savings);
         System.out.println("\nSzczegóły kategorii:");
         printCategoryRecursive(manager.getRootCategory(), 0);
+    }
+    private void handleShowForecast() {
+            System.out.println("\n=== SYMULACJA BUDŻETOWA ===");
+
+            if (manager.getCurrentMonth() == null) {
+                System.out.println("Błąd: Nie wybrano miesiąca.");
+                return;
+            }
+
+            double actualSavings = manager.getCurrentSavings();
+            double forecastSavings = manager.getForecast();
+
+            System.out.println("Stan konta na DZIŚ: " + String.format("%.2f", actualSavings) + " zł");
+
+            System.out.println("---------------------------------");
+            System.out.print("Prognoza na KONIEC miesiąca: ");
+
+            if (forecastSavings > 0) {
+                System.out.println("\u001B[32m" + String.format("%.2f", forecastSavings) + " zł (NA PLUSIE)\u001B[0m");
+                System.out.println("Komentarz: Wydajesz rozsądnie. Utrzymaj to tempo!");
+            } else {
+                System.out.println("\u001B[31m" + String.format("%.2f", forecastSavings) + " zł (ZAGROŻENIE)\u001B[0m");
+                System.out.println("Komentarz: UWAGA! Wydajesz za szybko. Jeśli nie zwolnisz, zabraknie Ci "
+                        + String.format("%.2f", Math.abs(forecastSavings)) + " zł.");
+            }
+            System.out.println("---------------------------------");
     }
 
     public void printCategoryRecursive(Category cat, int level) {
