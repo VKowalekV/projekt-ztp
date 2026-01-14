@@ -2,37 +2,22 @@ public class SavingsGoals implements BudgetObserver {
     private String goalName;
     private double targetAmount;
     private boolean isMet;
+    private double currentSavings;
 
     public SavingsGoals(String Name, double target) {
         goalName = Name;
         targetAmount = target;
+        this.currentSavings = 0.0;
     }
 
     public void update(double totalExpenses, double totalIncome) {
-        isMet = totalIncome - totalExpenses > targetAmount;
+        this.currentSavings = totalIncome - totalExpenses;
+        isMet = currentSavings >= targetAmount;
+        System.out.println(getStatus());
     }
 
-    public boolean getStatus() {
-        return isMet;
+    public String getStatus() {
+        double percent = targetAmount > 0 ? Math.min(100.0, (currentSavings / targetAmount) * 100.0) : 100.0;
+        return String.format("%s: %.2f/%.2f (%.0f%%) - %s", goalName, currentSavings, targetAmount, percent, isMet ? "Osiągnięty" : "Nieosiągnięty");
     }
 }
-/*
- * Klasa SavingsGoal
- * 
- * Obserwuje budżet, by sprawdzić, czy użytkownika stać na cel.
- * 
- * Pola:
- * 
- * goalName : String – Nazwa celu (np. "Nowy Laptop").
- * 
- * targetAmount : double – Wymagana kwota.
- * 
- * isMet : boolean – Flaga, czy cel został osiągnięty.
- * 
- * Metody:
- * 
- * + update(...) – Oblicza oszczędności (Income - Expenses). Jeśli są >=
- * targetAmount, zmienia isMet na true.
- * 
- * + getStatus() – Zwraca sformatowany tekst o postępie realizacji celu
- */

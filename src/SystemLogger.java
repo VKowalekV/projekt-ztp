@@ -1,14 +1,12 @@
-public class SystemLogger implements BudgetObserver{
-    public void update(double totalExpenses, double totalIncome){
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+public class SystemLogger implements BudgetObserver{
+    private static final DateTimeFormatter FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public void update(double totalExpenses, double totalIncome){
+        double balance = totalIncome - totalExpenses;
+        String now = LocalDateTime.now().format(FMT);
+        System.out.println(String.format("[%s] System zaktualizowany. Przychody: %.2f, Wydatki: %.2f, Saldo: %.2f", now, totalIncome, totalExpenses, balance));
     }
 }
-/*
-Klasa SystemLogger
-
-Techniczny obserwator.
-
-Metody:
-
-+ update(...) – Zapisuje logi systemowe (np. "System zaktualizowany o 12:00. Nowe saldo: 500zł").
-*/

@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ConsoleUI implements BudgetObserver {
     private BufferedReader reader;
@@ -10,6 +12,8 @@ public class ConsoleUI implements BudgetObserver {
 
     private Map<String, String> userBudgets = new HashMap<>();
     private Map<String, String> userPasswords = new HashMap<>();
+
+    private List<SavingsGoals> savingsGoals = new ArrayList<>();
 
     public ConsoleUI() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -78,10 +82,11 @@ public class ConsoleUI implements BudgetObserver {
                         case 1 -> handleAddIncome();
                         case 2 -> handleAddExpense();
                         case 3 -> handleAddCategory();
-                        case 4 -> handleNextState();
-                        case 5 -> handleChangeMonth();
-                        case 6 -> handleShowReport();
-                        case 7 -> handleExport();
+                        case 4 -> handleAddSavingsGoal();
+                        case 5 -> handleNextState();
+                        case 6 -> handleChangeMonth();
+                        case 7 -> handleShowReport();
+                        case 8 -> handleExport();
                         case 0 -> {
                             System.out.println("Zamykanie...");
                             isUserLoggedIn = false;
@@ -119,10 +124,11 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("1. Dodaj przychód");
         System.out.println("2. Dodaj wydatek (Transakcja)");
         System.out.println("3. Dodaj kategorię (Struktura)");
-        System.out.println("4. " + nextStateAction);
-        System.out.println("5. Przełącz miesiąc");
-        System.out.println("6. Pokaż raport");
-        System.out.println("7. Eksportuj dane");
+        System.out.println("4. Dodaj cel oszczędzania");
+        System.out.println("5. " + nextStateAction);
+        System.out.println("6. Przełącz miesiąc");
+        System.out.println("7. Pokaż raport");
+        System.out.println("8. Eksportuj dane");
         System.out.println("0. Wyjście");
         System.out.print("Wybór: ");
     }
@@ -192,6 +198,32 @@ public class ConsoleUI implements BudgetObserver {
             manager.addTransaction(cat, amount, desc);
         } catch (Exception e) {
             System.out.println("Błąd danych.");
+        }
+    }
+
+    private void handleAddSavingsGoal() {
+        try {
+            System.out.println("\n--- OBECNE CELE OSZCZEDZANIA ---");
+            if (savingsGoals.isEmpty()) {
+                System.out.println("Brak zarejestrowanych celów.");
+            } else {
+                for (SavingsGoals goal : savingsGoals) {
+                    System.out.println(goal.getStatus());
+                }
+            }
+
+            System.out.println("\n--- DODAWANIE CELU OSZCZEDZANIA ---");
+            System.out.print("Nazwa celu: ");
+            String name = reader.readLine();
+            System.out.print("Kwota docelowa: ");
+            double target = Double.parseDouble(reader.readLine());
+
+            SavingsGoals newGoal = manager.addSavingsGoal(name, target);
+            savingsGoals.add(newGoal);
+
+            System.out.println("Dodano cel: " + newGoal.getStatus());
+        } catch (Exception e) {
+            System.out.println("Błąd przy dodawaniu celu.");
         }
     }
 
