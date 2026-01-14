@@ -289,5 +289,25 @@ public class ConsoleUI implements BudgetObserver {
     }
 
     public void update(double totalExpenses, double totalIncome) {
+        if (manager == null || manager.getRootCategory() == null) return;
+        checkExceededRecursive(manager.getRootCategory());
+    }
+
+    private void checkExceededRecursive(Category cat) {
+        if (cat == null) return;
+        double amount = cat.getAmount();
+        double limit = cat.getLimit();
+        if (limit > 0) {
+            if (amount >= limit) {
+                System.out.println(String.format("Uważaj: przekroczyłeś budżet w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+            } else if (amount >= 0.8 * limit) {
+                System.out.println(String.format("Uwaga: wydatki osiągnęły 80%% budżetu w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+            }
+        }
+        for (BudgetComponent child : cat.getChildren()) {
+            if (child instanceof Category) {
+                checkExceededRecursive((Category) child);
+            }
+        }
     }
 }
