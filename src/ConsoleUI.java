@@ -178,7 +178,6 @@ public class ConsoleUI implements BudgetObserver {
             String input = reader.readLine();
             double amount = Double.parseDouble(input);
             manager.addIncome(amount);
-            System.out.println("Pomyślnie dodano przychód: " + amount);
         } catch (NumberFormatException e) {
             System.out.println("Błąd: To nie jest poprawna liczba.");
         } catch (IOException e) {

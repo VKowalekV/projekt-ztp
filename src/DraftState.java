@@ -1,5 +1,11 @@
 public class DraftState implements BudgetLifecycleState {
     @Override
+    public void addIncome(BudgetMonth context, double amount) {
+        context.performAddIncome(amount);
+        System.out.println("Pomyślnie dodano przychód: " + amount);
+    }
+
+    @Override
     public void addCategory(BudgetMonth context, String parentName, String name, double limit) {
         context.performAddSubCategory(parentName, name, limit);
     }

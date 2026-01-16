@@ -1,5 +1,10 @@
 public class ClosedState implements BudgetLifecycleState {
     @Override
+    public void addIncome(BudgetMonth context, double amount) {
+        System.out.println("Błąd: Budzet jest zamknięty (brak możliwości dodania nowego przychodu).");
+    }
+
+    @Override
     public void addCategory(BudgetMonth context, String parentName, String name, double limit) {
         System.out.println("Błąd: Budżet jest zamknięty (brak możliwości modyfikacji kategorii).");
     }

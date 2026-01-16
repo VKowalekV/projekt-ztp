@@ -39,9 +39,13 @@ public class BudgetMonth {
         return rootCategory;
     }
 
-    public void addIncome(double amount) {
+    public void performAddIncome(double amount) {
         this.totalIncome += amount;
         this.rootCategory.setSpendingLimit(totalIncome);
+    }
+
+    public void addIncome(double amount) {
+        lifecycleState.addIncome(this, amount);
     }
 
     public double getIncome() {
@@ -56,6 +60,9 @@ public class BudgetMonth {
         lifecycleState.addCategory(this, parentName, newCatName, limit);
     }
 
+    public void exportData(ExporterCreator creator) {
+        lifecycleState.exportData(this, creator);
+    }
 
 
     public void performAddTransaction(String categoryName, double amount, String desc) {
