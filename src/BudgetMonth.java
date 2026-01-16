@@ -56,6 +56,8 @@ public class BudgetMonth {
         lifecycleState.addCategory(this, parentName, newCatName, limit);
     }
 
+
+
     public void performAddTransaction(String categoryName, double amount, String desc) {
         Category category = findCategoryRecursive(rootCategory, categoryName);
         if (category != null) {
