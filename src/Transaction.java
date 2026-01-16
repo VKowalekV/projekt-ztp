@@ -5,10 +5,22 @@ public class Transaction implements BudgetComponent {
     private double amount;
     private LocalDate date;
 
+    private BudgetComponent parent;
+
     public Transaction(double amount, String name, LocalDate date) {
         this.amount = amount;
         this.name = name;
         this.date = date;
+    }
+
+    @Override
+    public void setParent(BudgetComponent parent) {
+        this.parent = parent;
+    }
+
+    @Override
+    public BudgetComponent getParent() {
+        return parent;
     }
 
     @Override
