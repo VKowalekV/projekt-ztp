@@ -104,11 +104,21 @@ public class BudgetManager {
     }
 
     public void registerObserver(BudgetObserver o) {
-        observers.add(o);
+        if (o == null) return;
+        if (!observers.contains(o)) {
+            observers.add(o);
+            o.update(getTotalExpenses(), getIncome());
+        }
     }
 
     public void removeObserver(BudgetObserver o) {
         observers.remove(o);
+    }
+
+    public SavingsGoals addSavingsGoal(String name, double target) {
+        SavingsGoals goal = new SavingsGoals(name, target);
+        registerObserver(goal);
+        return goal;
     }
 
     public void notifyObservers() {

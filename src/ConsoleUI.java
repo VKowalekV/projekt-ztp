@@ -3,6 +3,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
 
 public class ConsoleUI implements BudgetObserver {
     private BufferedReader reader;
@@ -10,6 +12,8 @@ public class ConsoleUI implements BudgetObserver {
 
     private Map<String, String> userBudgets = new HashMap<>();
     private Map<String, String> userPasswords = new HashMap<>();
+
+    private List<SavingsGoals> savingsGoals = new ArrayList<>();
 
     public ConsoleUI() {
         this.reader = new BufferedReader(new InputStreamReader(System.in));
@@ -76,11 +80,12 @@ public class ConsoleUI implements BudgetObserver {
                         case 1 -> handleAddIncome();
                         case 2 -> handleAddExpense();
                         case 3 -> handleAddCategory();
-                        case 4 -> handleNextState();
-                        case 5 -> handleChangeMonth();
-                        case 6 -> handleShowReport();
-                        case 7 -> handleExport();
-                        case 8 -> handleShowForecast();
+                        case 4 -> handleAddSavingsGoal();
+                        case 5 -> handleNextState();
+                        case 6 -> handleChangeMonth();
+                        case 7 -> handleShowReport();
+                        case 8 -> handleExport();
+                        case 9 -> handleShowForecast();
                         case 0 -> {
                             System.out.println("Zamykanie...");
                             isUserLoggedIn = false;
@@ -118,11 +123,12 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("1. Dodaj przychód");
         System.out.println("2. Dodaj wydatek (Transakcja)");
         System.out.println("3. Dodaj kategorię (Struktura)");
-        System.out.println("4. " + nextStateAction);
-        System.out.println("5. Przełącz miesiąc");
-        System.out.println("6. Pokaż raport");
-        System.out.println("7. Eksportuj dane");
-        System.out.println("8. Pokaż prognozę");
+        System.out.println("4. Dodaj cel oszczędzania");
+        System.out.println("5. " + nextStateAction);
+        System.out.println("6. Przełącz miesiąc");
+        System.out.println("7. Pokaż raport");
+        System.out.println("8. Eksportuj dane");
+        System.out.println("9. Pokaż prognozę");
         System.out.println("0. Wyjście");
         System.out.print("Wybór: ");
     }
@@ -192,6 +198,32 @@ public class ConsoleUI implements BudgetObserver {
             manager.addTransaction(cat, amount, desc);
         } catch (Exception e) {
             System.out.println("Błąd danych.");
+        }
+    }
+
+    private void handleAddSavingsGoal() {
+        try {
+            System.out.println("\n--- OBECNE CELE OSZCZEDZANIA ---");
+            if (savingsGoals.isEmpty()) {
+                System.out.println("Brak zarejestrowanych celów.");
+            } else {
+                for (SavingsGoals goal : savingsGoals) {
+                    System.out.println(goal.getStatus());
+                }
+            }
+
+            System.out.println("\n--- DODAWANIE CELU OSZCZEDZANIA ---");
+            System.out.print("Nazwa celu: ");
+            String name = reader.readLine();
+            System.out.print("Kwota docelowa: ");
+            double target = Double.parseDouble(reader.readLine());
+
+            SavingsGoals newGoal = manager.addSavingsGoal(name, target);
+            savingsGoals.add(newGoal);
+
+            System.out.println("Dodano cel: " + newGoal.getStatus());
+        } catch (Exception e) {
+            System.out.println("Błąd przy dodawaniu celu.");
         }
     }
 
@@ -283,5 +315,54 @@ public class ConsoleUI implements BudgetObserver {
     }
 
     public void update(double totalExpenses, double totalIncome) {
+        double totalAllocated = 0.0;
+        for (SavingsGoals sg : savingsGoals) {
+            totalAllocated += sg.getAllocated();
+        }
+        double available = manager.getIncome() - manager.getTotalExpenses() - totalAllocated;
+        if (available > 1e-9) {
+            List<SavingsGoals> needy = new ArrayList<>();
+            for (SavingsGoals sg : savingsGoals) if (sg.getRemainingNeed() > 0.0) needy.add(sg);
+            while (available > 1e-6 && !needy.isEmpty()) {
+                int n = needy.size();
+                double per = available / n;
+                boolean any = false;
+                java.util.Iterator<SavingsGoals> it = needy.iterator();
+                while (it.hasNext()) {
+                    SavingsGoals sg = it.next();
+                    double need = sg.getRemainingNeed();
+                    double toAlloc = Math.min(per, need);
+                    if (toAlloc > 0.0) {
+                        double actually = sg.allocate(toAlloc);
+                        available -= actually;
+                        any = true;
+                        System.out.println(String.format("Przydzielono %.2f do celu '%s' (%.2f/%.2f)", actually, sg.getGoalName(), sg.getAllocated(), sg.getAllocated() + sg.getRemainingNeed()));
+                    }
+                    if (sg.getRemainingNeed() <= 1e-6) it.remove();
+                }
+                if (!any) break;
+            }
+        }
+
+        if (manager == null || manager.getRootCategory() == null) return;
+        checkExceededRecursive(manager.getRootCategory());
+    }
+
+    private void checkExceededRecursive(Category cat) {
+        if (cat == null) return;
+        double amount = cat.getAmount();
+        double limit = cat.getLimit();
+        if (limit > 0) {
+            if (amount >= limit) {
+                System.out.println(String.format("Uważaj: przekroczyłeś budżet w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+            } else if (amount >= 0.8 * limit) {
+                System.out.println(String.format("Uwaga: wydatki osiągnęły 80%% budżetu w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+            }
+        }
+        for (BudgetComponent child : cat.getChildren()) {
+            if (child instanceof Category) {
+                checkExceededRecursive((Category) child);
+            }
+        }
     }
 }
