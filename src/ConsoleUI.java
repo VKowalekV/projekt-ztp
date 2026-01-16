@@ -296,13 +296,13 @@ public class ConsoleUI implements BudgetObserver {
         boolean isValid = false;
 
         do {
-            System.out.println("Select file format (CSV or JSON):");
+            System.out.println("Wybierz format (CSV lub JSON):");
             extension = reader.readLine().toUpperCase();
 
             if (extension.equals("CSV") || extension.equals("JSON")) {
                 isValid = true;
             } else {
-                System.out.println("Invalid format. Please enter 'CSV' or 'JSON'.");
+                System.out.println("Niepoprawny format. Wybierz 'CSV' lub 'JSON'.");
             }
         } while (!isValid);
 
