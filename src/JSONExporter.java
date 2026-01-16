@@ -45,19 +45,19 @@ public class JSONExporter implements FileExporter {
 
     private JsonObject buildJsonRecursive(BudgetComponent root) {
         JsonObject json = new JsonObject();
-        json.addProperty("nazwa", root.getName());
-        json.addProperty("typ", root.getType());
-        json.addProperty("ilość", root.getAmount());
+        json.addProperty("Name", root.getName());
+        json.addProperty("Type", root.getType());
+        json.addProperty("Amount", root.getAmount());
 
         if (root instanceof Category) {
             Category category = (Category) root;
-            json.addProperty("limit", category.getLimit());
+            json.addProperty("Limit", category.getLimit());
 
             JsonArray children = new JsonArray();
             for (BudgetComponent child : category.getChildren()) {
                 children.add(buildJsonRecursive(child));
             }
-            json.add("dziecko", children);
+            json.add("children", children);
         }
         return json;
     }
