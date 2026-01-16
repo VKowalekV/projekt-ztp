@@ -129,7 +129,7 @@ public class BudgetManager {
 
     public void exportData(ExporterCreator creator) {
         if (currentMonth != null) {
-            creator.performExport(currentMonth.getRootCategory(), currentMonth);
+            currentMonth.getLifecycleState().exportData(currentMonth, creator);
         }
     }
 }

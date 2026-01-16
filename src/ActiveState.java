@@ -1,16 +1,21 @@
 public class ActiveState implements BudgetLifecycleState {
     @Override
-    public void addCategory(BudgetMonth context, String parentName, String name, double limit){
+    public void addCategory(BudgetMonth context, String parentName, String name, double limit) {
         System.out.println("Błąd: Budżet jest aktywny (brak możliwości modyfikacji kategorii).");
     }
 
     @Override
-    public void addTransaction(BudgetMonth context, String categoryName, double amount, String desc){
+    public void addTransaction(BudgetMonth context, String categoryName, double amount, String desc) {
         context.performAddTransaction(categoryName, amount, desc);
     }
 
     @Override
-    public void nextState(BudgetMonth context){
+    public void exportData(BudgetMonth context, ExporterCreator creator) {
+        System.out.println("Błąd: Budżet jest aktywny (eksport możliwy tylko po zamknięciu miesiąca).");
+    }
+
+    @Override
+    public void nextState(BudgetMonth context) {
         context.setLifecycleState(new ClosedState());
         System.out.println("Budżet został zamknięty.");
     }
