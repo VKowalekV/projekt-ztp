@@ -31,7 +31,7 @@ public class CSVExporter implements FileExporter {
 
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
                 CSVPrinter printer = new CSVPrinter(writer,
-                        CSVFormat.DEFAULT.withHeader("Name", "Type", "Amount", "Limit", "Path"))) {
+                        CSVFormat.DEFAULT.withHeader("nazwa", "typ", "ilość", "limit", "ścieżka"))) {
 
             buildCSVRecursive(root, "", printer);
 
