@@ -262,13 +262,13 @@ public class ConsoleUI implements BudgetObserver {
 
             if (forecastSavings > 0) {
                 System.out.println("\u001B[32m" + String.format("%.2f", forecastSavings) + " zł (NA PLUSIE)\u001B[0m");
-                System.out.println("Komentarz: Wydajesz rozsądnie. Utrzymaj to tempo!");
+                System.out.println("Komentarz: Wydajesz rozsądnie! Utrzymując to tempo wydasz mniej, niż zaplanowałeś.");
             } else if (forecastSavings == 0) {
                 System.out.println("\u001B[33m" + "0.00 zł (BILANS ZEROWY)\u001B[0m");
-                System.out.println("Komentarz: Wychodzisz idealnie na zero. Nic nie oszczędzisz, ale nie masz długów.");
+                System.out.println("Komentarz: Wychodzisz idealnie na zero, mieścisz się idealnie w budżecie.");
             } else {
                 System.out.println("\u001B[31m" + String.format("%.2f", forecastSavings) + " zł (ZAGROŻENIE)\u001B[0m");
-                System.out.println("Komentarz: UWAGA! Wydajesz za szybko. Jeśli nie zwolnisz, zabraknie Ci "
+                System.out.println("Komentarz: Uwaga! Przekraczasz zaplanowany budżet jeśli chcesz się w nim zmieścić musisz ograniczyć wydatki. "
                         + String.format("%.2f", Math.abs(forecastSavings)) + " zł.");
             }
             System.out.println("---------------------------------");
