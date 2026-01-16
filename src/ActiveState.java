@@ -1,5 +1,11 @@
 public class ActiveState implements BudgetLifecycleState {
     @Override
+    public void addIncome(BudgetMonth context, double amount) {
+        context.performAddIncome(amount);
+        System.out.println("Pomyślnie dodano przychód: " + amount);
+    }
+
+    @Override
     public void addCategory(BudgetMonth context, String parentName, String name, double limit) {
         System.out.println("Błąd: Budżet jest aktywny (brak możliwości modyfikacji kategorii).");
     }
