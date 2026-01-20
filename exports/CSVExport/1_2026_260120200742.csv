@@ -1,0 +1,6 @@
+Name,Type,Amount,Limit,Path
+Budzet,CATEGORY,1700.0,5.00005E7,Budzet
+Dom,CATEGORY,500.0,3000.0,Budzet/Dom
+Czynsz,TRANSACTION,500.0,,Budzet/Dom/Czynsz
+Jedzenie,CATEGORY,1200.0,1200.0,Budzet/Jedzenie
+Zakupy,TRANSACTION,1200.0,,Budzet/Jedzenie/Zakupy
