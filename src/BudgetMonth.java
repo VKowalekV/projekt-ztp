@@ -64,11 +64,11 @@ public class BudgetMonth {
         lifecycleState.exportData(this, creator);
     }
 
-
     public void performAddTransaction(String categoryName, double amount, String desc) {
         Category category = findCategoryRecursive(rootCategory, categoryName);
         if (category != null) {
             category.add(new Transaction(amount, desc, LocalDate.of(year, month, 1)));
+            System.out.println("Pomyślnie dodano transakcję: " + amount + " " + desc + " do kategorii " + categoryName);
         } else {
             System.out.println("Nie znaleziono kategorii o nazwie " + categoryName);
         }
@@ -81,6 +81,8 @@ public class BudgetMonth {
             for (BudgetComponent c : parent.getChildren()) {
                 if (c instanceof Category) {
                     currentChildrenLimitSum += ((Category) c).getLimit();
+                    System.out.println("Pomyślnie dodano kategorię: " + newCatName + " do kategorii " + parentName
+                            + " z limitem " + limit);
                 }
             }
             if (currentChildrenLimitSum + limit > parent.getLimit()) {
