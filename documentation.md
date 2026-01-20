@@ -149,98 +149,87 @@ Bardzo łatwe dodanie nowego formatu eksportu (np. PDF, XML). Wystarczy dodać n
 
 ## 3. Instrukcja Użytkownika
 
-### Logowanie i Start
+### Uruchamianie i Logowanie
 
 Po starcie aplikacji wyświetlany jest ekran logowania. Użytkownik ma możliwość zalogowania się lub zakończenia programu. Aplikacja nie umożliwia rejestracji nowych kont.
 
-Po wybraniu opcji **Zaloguj** należy podać login oraz hasło. Identyfikator budżetu (np. "Dom") jest przypisany do konta i nie wpisujemy go ręcznie.
+Po wybraniu opcji **Zaloguj** należy podać login oraz hasło (identyfikator budżetu oznacza do jakiego budżetu należy nasz klient nie wpisujemy go podczas logowania).
 
 **Dostępne konta testowe:**
 
-- login: `jan`, hasło: `123` (Budżet "Dom")
-- login: `anna`, hasło: `123` (Budżet "Firma")
-- login: `marcin`, hasło: `123` (Budżet "Dom")
-- login: `kacper`, hasło: `123` (Budżet "Firma")
+- login: `jan` hasło: `123` (identyfikator budżetu: "Dom")
+- login: `anna` hasło: `123` (identyfikator budżetu: "Firma")
+- login: `marcin` hasło: `123` (identyfikator budżetu: "Dom")
+- login: `kacper` hasło: `123` (identyfikator budżetu: "Firma")
 
-Po poprawnym logowaniu użytkownik zostaje przeniesiony do głównego **MENU** aplikacji.
+Po poprawnym logowaniu użytkownik zostaje przeniesiony do głównego MENU aplikacji.
 
-### Cykl Życia Budżetu
+### Główne Funkcjonalności
 
-Budżet może znajdować się w trzech stanach, które determinują dostępne opcje:
+Budżet może znajdować się w trzech stanach: planowania, aktywnym oraz zamkniętym.
 
-#### 1. Stan Planowania
+#### Stan Planowania
 
-Domyślny stan po zalogowaniu (dla nowego miesiąca).
-**Dostępne opcje:**
+Po zalogowaniu budżet domyślnie znajduje się w stanie planowania. W tym trybie dostępne są następujące opcje:
 
-- Dodanie przychodu (1)
-- Dodanie kategorii (3)
-- Dodanie celów oszczędnościowych (4)
-- Zatwierdzenie planu (5) - _przełącza na stan Aktywny_
-- Przełączenie miesiąca (6)
-- Wyświetlanie raportu (7)
-- Wyświetlanie prognozy (9)
-- Wyjście z programu (0)
+- dodanie przychodu
+- dodanie kategorii
+- dodanie celów oszczędnościowych
+- zatwierdzenie planu
+- przełączenie miesiąca
+- wyświetlanie raportu
+- wyświetlanie prognozy
+- wyjście z programu
 
-_Uwaga: W tym stanie nie można dodawać wydatków (transakcji)._
+Po dodaniu kategorii i przychodów należy zatwierdzić plan, co zmienia stan budżetu na aktywny.
 
-#### 2. Stan Aktywny
+#### Stan Aktywny
 
-Stan po zatwierdzeniu planu.
-**Dostępne opcje:**
+W stanie aktywnym użytkownik może:
 
-- Dodanie przychodu (1)
-- Dodanie wydatku (2) - _przypisanie transakcji do kategorii_
-- Dodanie celów oszczędnościowych (4)
-- Zamknięcie miesiąca (5) - _przełącza na stan Zamknięty_
-- Przełączenie miesiąca (6)
-- Wyświetlanie raportu (7)
-- Wyświetlanie prognozy (9)
-- Wyjście z programu (0)
+- dodać przychód
+- dodać wydatek
+- dodać cele oszczędnościowe
+- zamknąć miesiąc
+- przełączyć miesiąc
+- wyświetlić raport
+- wyświetlić prognozę
+- wyjść z programu
 
-#### 3. Stan Zamknięty
+Po zakończeniu miesiąca i wybraniu opcji zamknij miesiąc budżet przechodzi w stan zamknięty. W tym stanie nie ma możliwości edycji przychodów, wydatków ani kategorii.
 
-Stan po zakończeniu miesiąca. Brak możliwości edycji przychodów, wydatków ani kategorii.
-**Dostępne opcje:**
+#### Stan Zamknięty
 
-- Dodanie celów oszczędnościowych (4)
-- Przełączenie miesiąca (6)
-- Wyświetlanie raportu (7)
-- Eksport danych (8)
-- Wyświetlanie prognozy (9)
-- Wyjście z programu (0)
+W stanie zamkniętym użytkownik może:
 
-### Opis Funkcjonalności (Menu)
+- dodać cele oszczędnościowe
+- przełączyć miesiąc
+- wyświetlić raport
+- eksportować dane
+- wyświetlić prognozę
+- wyjść z programu
 
-1.  **Dodaj przychód (Opcja 1):**
-    Należy podać kwotę przychodu. Po zatwierdzeniu zwiększa się pula dostępnych środków.
+Po zamknięciu miesiąca użytkownik może przejść do kolejnego miesiąca i ponownie korzystać z aplikacji.
 
-2.  **Dodaj wydatek (Opcja 2):**
-    Dostępne tylko w stanie aktywnym. Należy wskazać istniejącą kategorię, podać kwotę oraz opis. System przypisuje wydatek do kategorii i sprawdza limity.
+### Opis działania poszczególnych funkcji
 
-3.  **Dodaj kategorię (Opcja 3):**
-    Dostępne tylko w stanie planowania. Należy podać nazwę kategorii nadrzędnej (domyślna to "Budzet"), nazwę nowej podkategorii oraz limit wydatków.
+1.  **Dodanie przychodu (Opcja 1):** Aby dodać przychód należy w MENU wybrać opcję 1, a następnie podać jego kwotę. Po zatwierdzeniu wyświetlany jest komunikat o pomyślnym dodaniu przychodu.
 
-4.  **Dodaj cel oszczędnościowy (Opcja 4):**
-    Należy podać nazwę celu oraz kwotę docelową. System automatycznie przydziela wolne środki (Przychód - Wydatki - Inne cele) na realizację celu.
+2.  **Dodanie wydatku (Opcja 2):** Dodanie wydatku odbywa się poprzez wybranie opcji 2 w MENU. Następnie należy wskazać istniejącą kategorię, podaj kwotę wydatku oraz jego opis. Po zatwierdzeniu wyświetlany jest komunikat potwierdzający dodaniu wydatku.
 
-5.  **Zmiana stanu budżetu (Opcja 5):**
-    Służy do przełączania faz miesiąca: `Planowanie -> Aktywny -> Zamknięty`.
+3.  **Dodanie kategorii (Opcja 3):** W celu dodania nowej kategorii należy w MENU wybrać opcję 3. Najpierw podaje się nazwę kategori nadrzędnej (domyślnie istnieje kategoria Budzet), następnie nazwę nowej kategorii oraz limit wydatków. Po poprawnym dodaniu wyświetlany jest stosowny komunikat.
 
-6.  **Zmień miesiąc (Opcja 6):**
-    Pozwala podać rok i miesiąc, dla którego chcemy prowadzić budżet. Umożliwia pracę na budżetach historycznych lub przyszłych.
+4.  **Cele oszczędnościowe (Opcja 4):** Opcja 4 w MENU umożliwia dodawanie nowego celu oszczędnościowego. W tym celu należy podać nazwę celu oraz kwotę, która użytkownik chce zgromadzić. Po zatwierdzeniu pojawia się komunikat o pomyślnym dodaniu celu oszczędnościowego.
 
-7.  **Pokaż raport (Opcja 7):**
-    Wyświetla podsumowanie: całkowite przychody, wydatki, bilans oraz szczegółowe drzewo kategorii z informacją o wykorzystaniu limitów.
+5.  **Zmiana stanu budżetu (Opcja 5):** Zmiana stanu budżetu odbywa się poprzez wybór opcji 5 w MENU. Pozwala to przejść ze stanu planowania do stanu aktywnego, a następnie zamknąć miesiąc. Po każdej zmianie wyświetlany jest komunikat potwierdzający operację.
 
-8.  **Eksport danych (Opcja 8):**
-    Dostępne tylko w stanie zamkniętym. Pozwala na wybór formatu (**JSON** lub **CSV**). Pliki zapisywane są w folderze `exports/` i zawierają: nazwę, typ, kwotę, limit oraz ścieżkę kategorii.
+6.  **Przełączenie miesiąca (Opcja 6):** Aby zmienić miesiąc należy wybrać opcję 6, a następnie podać rok oraz miesiąc, dla którego ma być prowadzony budżet. Po zatwierdzeniu aplikacja przełącza się na wybrany okres.
 
-9.  **Prognoza finansowa (Opcja 9):**
-    Wyświetla symulację stanu konta na koniec miesiąca, bazując na obecnym tempie wydawania pieniędzy.
+7.  **Wyświetlanie raportu (Opcja 7):** Opcja 7 pozwala wyświetlić raport finansowy. Zawiera on informację o całkowitych przychodach, wydatkach, bilansie oraz szczegółowe zestawienie wydatków i limitów dla każdej kategorii.
 
-10. **Wyjście (Opcja 0):**
-    Kończy działanie programu.
+8.  **Eksport danych (Opcja 8):** Aby wyeksportować dane w MENU należy wybrać opcję 8. Najpierw wybieramy rozszerzenia pliku, w którym mają zostać zapisane (JSON lub CSV). Po wyborze rozszerzenia wykonywany jest eksport do pliku zawierającego następujące informacje: nazwę kategorii, typ obiektu (kategoria lub transakcja przypisana do danej kategorii), kwotę wydaną w danej kategorii lub transakcji, limit wydatków dla kategorii oraz ścieżkę do danej kategorii. Pliki pojawią się w folderze exports w folderze w zależności od rozszerzenia, CSVExports albo JSONExports.
+
+9.  **Prognoza finansowa (Opcja 9):** Po wybraniu opcji 9 aplikacja wyświetla prognozę finansową, która pokazuje szacowaną ilość środków pozostałych na koniec miesiąca.
 
 ## 4. Instrukcja Instalacji
 
