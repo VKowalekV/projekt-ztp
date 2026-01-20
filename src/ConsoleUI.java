@@ -22,8 +22,10 @@ public class ConsoleUI implements BudgetObserver {
         userPasswords.put("jan", "123");
         userBudgets.put("anna", "Firma");
         userPasswords.put("anna", "123");
-        userBudgets.put("marcin", "dom");
+        userBudgets.put("marcin", "Dom");
         userPasswords.put("marcin", "123");
+        userBudgets.put("kacper", "Firma");
+        userPasswords.put("kacper", "123");
     }
 
     public void start() {
