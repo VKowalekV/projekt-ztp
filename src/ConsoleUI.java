@@ -245,37 +245,39 @@ public class ConsoleUI implements BudgetObserver {
         System.out.println("\nSzczegóły kategorii:");
         printCategoryRecursive(manager.getRootCategory(), 0);
     }
+
     private void handleShowForecast() {
-            System.out.println("\n=== SYMULACJA BUDŻETOWA ===");
+        System.out.println("\n=== SYMULACJA BUDŻETOWA ===");
 
-            if (manager.getCurrentMonth() == null) {
-                System.out.println("Błąd: Nie wybrano miesiąca.");
-                return;
-            }
+        if (manager.getCurrentMonth() == null) {
+            System.out.println("Błąd: Nie wybrano miesiąca.");
+            return;
+        }
 
-            double actualSavings = manager.getCurrentSavings();
-            double forecastSavings = manager.getForecast();
+        double actualSavings = manager.getCurrentSavings();
+        double forecastSavings = manager.getForecast();
 
-            System.out.println("Stan konta na DZIŚ: " + String.format("%.2f", actualSavings) + " zł");
+        System.out.println("Stan konta na DZIŚ: " + String.format("%.2f", actualSavings) + " zł");
 
-            System.out.println("---------------------------------");
-            System.out.print("Prognoza na KONIEC miesiąca: ");
+        System.out.println("---------------------------------");
+        System.out.print("Prognoza na KONIEC miesiąca: ");
 
-            if (forecastSavings > 0) {
-                System.out.println("\u001B[32m" + String.format("%.2f", forecastSavings) + " zł (NA PLUSIE)\u001B[0m");
-                System.out.println("Komentarz: Wydajesz rozsądnie! Utrzymując to tempo wydasz mniej, niż zaplanowałeś.");
-            } else if (forecastSavings == 0) {
-                System.out.println("\u001B[33m" + "0.00 zł (BILANS ZEROWY)\u001B[0m");
-                System.out.println("Komentarz: Wychodzisz idealnie na zero, mieścisz się idealnie w budżecie.");
-            } else {
-                System.out.println("\u001B[31m" + String.format("%.2f", forecastSavings) + " zł (ZAGROŻENIE)\u001B[0m");
-                System.out.println("Komentarz: Uwaga! Przekraczasz zaplanowany budżet jeśli chcesz się w nim zmieścić musisz ograniczyć wydatki. "
-                        + String.format("%.2f", Math.abs(forecastSavings)) + " zł.");
-            }
-            System.out.println("---------------------------------");
+        if (forecastSavings > 0) {
+            System.out.println("\u001B[32m" + String.format("%.2f", forecastSavings) + " zł (NA PLUSIE)\u001B[0m");
+            System.out.println("Komentarz: Wydajesz rozsądnie! Utrzymując to tempo wydasz mniej, niż zaplanowałeś.");
+        } else if (forecastSavings == 0) {
+            System.out.println("\u001B[33m" + "0.00 zł (BILANS ZEROWY)\u001B[0m");
+            System.out.println("Komentarz: Wychodzisz idealnie na zero, mieścisz się idealnie w budżecie.");
+        } else {
+            System.out.println("\u001B[31m" + String.format("%.2f", forecastSavings) + " zł (ZAGROŻENIE)\u001B[0m");
+            System.out.println(
+                    "Komentarz: Uwaga! Przekraczasz zaplanowany budżet jeśli chcesz się w nim zmieścić musisz ograniczyć wydatki. "
+                            + String.format("%.2f", Math.abs(forecastSavings)) + " zł.");
+        }
+        System.out.println("---------------------------------");
     }
 
-    public void printCategoryRecursive(Category cat, int level) {
+    private void printCategoryRecursive(Category cat, int level) {
         String indent = "\t".repeat(level);
         String color = cat.getState().getColorCode();
         String reset = "\u001B[0m";
@@ -326,7 +328,9 @@ public class ConsoleUI implements BudgetObserver {
         double available = manager.getIncome() - manager.getTotalExpenses() - totalAllocated;
         if (available > 1e-9) {
             List<SavingsGoals> needy = new ArrayList<>();
-            for (SavingsGoals sg : savingsGoals) if (sg.getRemainingNeed() > 0.0) needy.add(sg);
+            for (SavingsGoals sg : savingsGoals)
+                if (sg.getRemainingNeed() > 0.0)
+                    needy.add(sg);
             while (available > 1e-6 && !needy.isEmpty()) {
                 int n = needy.size();
                 double per = available / n;
@@ -340,27 +344,34 @@ public class ConsoleUI implements BudgetObserver {
                         double actually = sg.allocate(toAlloc);
                         available -= actually;
                         any = true;
-                        System.out.println(String.format("Przydzielono %.2f do celu '%s' (%.2f/%.2f)", actually, sg.getGoalName(), sg.getAllocated(), sg.getAllocated() + sg.getRemainingNeed()));
+                        System.out.println(String.format("Przydzielono %.2f do celu '%s' (%.2f/%.2f)", actually,
+                                sg.getGoalName(), sg.getAllocated(), sg.getAllocated() + sg.getRemainingNeed()));
                     }
-                    if (sg.getRemainingNeed() <= 1e-6) it.remove();
+                    if (sg.getRemainingNeed() <= 1e-6)
+                        it.remove();
                 }
-                if (!any) break;
+                if (!any)
+                    break;
             }
         }
 
-        if (manager == null || manager.getRootCategory() == null) return;
+        if (manager == null || manager.getRootCategory() == null)
+            return;
         checkExceededRecursive(manager.getRootCategory());
     }
 
     private void checkExceededRecursive(Category cat) {
-        if (cat == null) return;
+        if (cat == null)
+            return;
         double amount = cat.getAmount();
         double limit = cat.getLimit();
         if (limit > 0) {
             if (amount >= limit) {
-                System.out.println(String.format("Uważaj: przekroczyłeś budżet w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+                System.out.println(String.format("Uważaj: przekroczyłeś budżet w kategorii '%s': %.2f/%.2f",
+                        cat.getName(), amount, limit));
             } else if (amount >= 0.8 * limit) {
-                System.out.println(String.format("Uwaga: wydatki osiągnęły 80%% budżetu w kategorii '%s': %.2f/%.2f", cat.getName(), amount, limit));
+                System.out.println(String.format("Uwaga: wydatki osiągnęły 80%% budżetu w kategorii '%s': %.2f/%.2f",
+                        cat.getName(), amount, limit));
             }
         }
         for (BudgetComponent child : cat.getChildren()) {
