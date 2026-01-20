@@ -68,7 +68,8 @@ public class BudgetMonth {
         Category category = findCategoryRecursive(rootCategory, categoryName);
         if (category != null) {
             category.add(new Transaction(amount, desc, LocalDate.of(year, month, 1)));
-            System.out.println("Pomyślnie dodano transakcję: " + amount + " " + desc + " do kategorii " + categoryName);
+            System.out
+                    .println("Pomyślnie dodano transakcję: " + amount + "zł " + desc + " do kategorii " + categoryName);
         } else {
             System.out.println("Nie znaleziono kategorii o nazwie " + categoryName);
         }
@@ -81,8 +82,6 @@ public class BudgetMonth {
             for (BudgetComponent c : parent.getChildren()) {
                 if (c instanceof Category) {
                     currentChildrenLimitSum += ((Category) c).getLimit();
-                    System.out.println("Pomyślnie dodano kategorię: " + newCatName + " do kategorii " + parentName
-                            + " z limitem " + limit);
                 }
             }
             if (currentChildrenLimitSum + limit > parent.getLimit()) {
@@ -94,6 +93,8 @@ public class BudgetMonth {
             }
 
             parent.add(new Category(newCatName, limit));
+            System.out.println("Pomyślnie dodano kategorię: " + newCatName + " do kategorii " + parentName
+                    + " z limitem " + limit);
         } else {
             System.out.println("Nie znaleziono kategorii o nazwie " + parentName);
         }
