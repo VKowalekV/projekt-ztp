@@ -1,0 +1,6 @@
+Name,Type,Amount,Limit,Path
+Budzet,CATEGORY,3.0,1.2312313E7,Budzet
+jedzenie,CATEGORY,3.0,100.0,Budzet/jedzenie
+jablko,CATEGORY,2.0,10.0,Budzet/jedzenie/jablko
+jablko co chcesz,TRANSACTION,2.0,,Budzet/jedzenie/jablko/jablko co chcesz
+sklep warzywny,TRANSACTION,1.0,,Budzet/jedzenie/sklep warzywny
