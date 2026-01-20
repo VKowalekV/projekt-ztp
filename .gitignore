@@ -32,6 +32,7 @@ bin/
 .idea/workspace.xml
 .idea/usage.statistics.xml
 .idea/shelf/
+./exports/
 
 # .idea/misc.xml
 # .idea/modules.xml
