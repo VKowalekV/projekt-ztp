@@ -35,12 +35,13 @@ Traktowanie pojedynczych transakcji i grup transakcji (kategorii) w jednolity sp
 - **Component:** `BudgetComponent` (interfejs definiujący wspólne operacje).
 - **Composite:** `Category` (kontener, może mieć dzieci).
 - **Leaf:** `Transaction` (liść, nie ma dzieci).
+- **Client:** `BudgetMonth` (klasa wykorzystująca strukturę kompozytu).
 
 **Lokalizacja:**
 
 - **Interfejs:** `src/BudgetComponent.java`
 - **Klasy:** `src/Category.java`, `src/Transaction.java`
-- **Użycie:** `src/BudgetMonth.java` (pole `rootCategory`), `src/ConsoleUI.java` (metoda `printCategoryRecursive`).
+- **Użycie:** `src/BudgetMonth.java` (pole `rootCategory`, metody `performAddTransaction`, `performAddSubCategory`, `findCategoryRecursive`), `src/ConsoleUI.java` (metoda `printCategoryRecursive`).
 
 **Wektor zmian:**
 Ułatwia dodawanie nowych typów składników budżetu (np. "Zlecenie stałe") bez zmiany logiki obliczania sum czy wyświetlania.
